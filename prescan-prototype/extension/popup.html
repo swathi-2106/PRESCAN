@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>PreScan — Quick Report</title>
+
+  <style>
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      width: 400px;
+      padding: 18px;
+      margin: 0;
+      background: #f3f4f6;
+    }
+
+    h3 {
+      margin: 0 0 12px 0;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .issue {
+      padding: 14px 16px;
+      margin: 14px 0;
+      border-radius: 12px;
+      background: #ffffff;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+      border: none; /* removed ugly border */
+    }
+
+    .issue:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.10);
+    }
+
+    /* Severity background colors - subtle, professional */
+    .high {
+      background: #fdecec;    /* soft rose */
+    }
+    .medium {
+      background: #fff3d6;    /* soft warm yellow */
+    }
+    .info {
+      background: #eaf1ff;    /* soft cool blue */
+    }
+
+    summary {
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #1f2937;
+      outline: none;
+    }
+
+    pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 13px;
+      line-height: 1.4;
+      margin-top: 6px;
+      color: #374151;
+    }
+
+    /* Professional Gradient Button */
+    #exportBtn {
+      margin-top: 18px;
+      padding: 12px 18px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      color: #fff;
+      font-weight: 600;
+      font-size: 14px;
+      background: linear-gradient(135deg, #2563eb, #10b981);
+      box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+
+    #exportBtn:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+    }
+  </style>
+
+</head>
+<body>
+  <h3>PreScan — Quick Report</h3>
+  <div id="content">Loading...</div>
+  <script src="popup.js"></script>
+</body>
+</html>

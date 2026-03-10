@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmic Explorer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1a2e 50%, #0f0f1e 100%);
+            color: #fff;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff; }
+            50% { box-shadow: 0 0 30px #ff00ff, 0 0 60px #ff00ff; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Landing Page */
+        .landing {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 4rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #00ffff, #ff00ff, #e38dc4);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 3s ease infinite, float 4s ease-in-out infinite;
+            margin-bottom: 30px;
+            text-shadow: 0 0 30px rgba(161, 191, 193, 0.5);
+        }
+
+        .tagline {
+            font-size: 1.5rem;
+            color: #00ffff;
+            margin-bottom: 50px;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.7);
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 30px;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            border: 2px solid #2dd4bf;
+            background: rgba(0, 204, 255, 0.121);
+            color: #00ffff;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(177, 215, 228, 0.219);
+            transform: translate(-50%, -50%);
+            transition: width 0.5s, height 0.5s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn:hover {
+            box-shadow: 0 0 30px #00ffff, inset 0 0 8px #00ffff;
+            transform: translateY(-8px);
+        }
+
+        .btn.secondary {
+            border-color: #ff00ff;
+            color: #ff00ff;
+        }
+
+        .btn.secondary:hover {
+            box-shadow: 0 0 30px #ff00ff, inset 0 0 8px #cd84bb; 
+        }
+
+        /* Auth Pages */
+        .auth-page {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .auth-box {
+            background: rgba(10, 14, 39, 0.8);
+            border: 2px solid #00ffff26;
+            border-radius: 20px;
+            padding: 50px;
+            width: 450px;
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.3);
+            animation: glow 3s infinite;
+        }
+
+        .auth-box h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+            background: linear-gradient(35deg, #00ffff, #ff00ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #00ffff;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(0, 255, 255, 0.05);
+            border: 2px solid #00ffff;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: #ff00ff;
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
+            background: rgba(255, 0, 255, 0.05);
+        }
+
+        .form-group input:hover {
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #00ffff, #ff00ff);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.7);
+        }
+
+        .switch-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #ee48d5;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .switch-link:hover {
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff;
+        }
+
+        /* Terms Page */
+        .terms-page {
+            min-height: 100vh;
+            padding: 100px 20px;
+        }
+
+        .terms-box {
+            background: rgba(10, 14, 39, 0.9);
+            border: 2px solid #ee48d5;
+            border-radius: 20px;
+            padding: 60px;
+            max-width: 900px;
+            margin: 0 auto;
+            box-shadow: 0 0 50px rgba(0, 255, 0, 0.3);
+        }
+
+        .terms-box h2 {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 3rem;
+            background: linear-gradient(45deg, #e261d1, #00ffff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .terms-content {
+            line-height: 1.8;
+            color: #aaa;
+            margin-bottom: 40px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 20px;
+        }
+
+        .terms-content::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .terms-content::-webkit-scrollbar-track {
+            background: rgba(0, 255, 255, 0.1);
+        }
+
+        .terms-content::-webkit-scrollbar-thumb {
+            background: #00ffff;
+            border-radius: 5px;
+        }
+
+        .terms-content p {
+            margin-bottom: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            min-height: 100vh;
+            padding: 80px 20px;
+        }
+
+        .main-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .main-header h1 {
+            font-size: 3.5rem;
+            background: linear-gradient(45deg, #00ffff75, #ff00ff55, #e98ce3);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        .facts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .fact-card {
+            background: rgba(10, 14, 39, 0.8);
+            border: 2px solid transparent;
+            border-radius: 20px;
+            padding: 40px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .fact-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(35deg, #00ffff8e, #eaafea, #a3d8e998, #00ffff);
+            background-size: 400% 400%;
+            border-radius: 20px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        .fact-card:hover::before {
+            opacity: 1;
+        }
+
+        .fact-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(0, 255, 255, 0.4);
+        }
+
+        .fact-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .fact-card h3 {
+            font-size: 1.8rem;
+            color: #00ffff;
+            margin-bottom: 15px;
+        }
+
+        .fact-card p {
+            color: #fffefe;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            padding: 10px 25px;
+            background: rgba(255, 0, 255, 0.2);
+            border: 2px solid #ff00ff;
+            color: #ff00ff;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 0, 255, 0.4);
+            box-shadow: 0 0 20px #ff00ff;
+        }
+
+
+
+        
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+
+    <!-- Landing Page -->
+    <div class="page active" id="landing">
+        <div class="container landing">
+            <div class="logo">COSMIC EXPLORER</div>
+            <div class="tagline">Discover the Mysteries of the Universe</div>
+            <div class="cta-buttons">
+                <button class="btn" onclick="showPage('login')">Login</button>
+                <button class="btn secondary" onclick="showPage('signup')">Sign Up</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Page -->
+    <div class="page" id="login">
+        <div class="auth-page">
+            <div class="auth-box">
+                <h2>Login</h2>
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" required>
+                    </div>
+                    <button type="submit" class="submit-btn">Enter the Cosmos</button>
+                </form>
+                <div class="switch-link" onclick="showPage('signup')">
+                    Don't have an account? Sign up here
+                </div>
+            </div>
+        </div>
+        <button class="back-btn" onclick="showPage('landing')">← Back</button>
+    </div>
+
+    <!-- Signup Page -->
+    <div class="page" id="signup">
+        <div class="auth-page">
+            <div class="auth-box">
+                <h2>Sign Up</h2>
+                <form onsubmit="handleSignup(event)">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" required>
+                    </div>
+                    <button type="submit" class="submit-btn">Join the Journey</button>
+                </form>
+                <div class="switch-link" onclick="showPage('login')">
+                    Already have an account? Login here
+                </div>
+            </div>
+        </div>
+        <button class="back-btn" onclick="showPage('landing')">← Back</button>
+    </div>
+
+    <!-- Terms Page -->
+    <div class="page" id="terms">
+        <div class="terms-page">
+            <div class="terms-box">
+                <h2>Terms & Conditions</h2>
+                <div class="terms-content">
+                    <p>Welcome to Cosmic Explorer, your gateway to the universe's most fascinating secrets.</p>
+                    <p>By accessing this platform, you agree to embark on an interstellar journey of discovery, where knowledge flows freely across the cosmic expanse.</p>
+                    <p><strong>Data Usage:</strong> Your exploration data will be encrypted using quantum-level security protocols and stored in our orbital data centers.</p>
+                    <p><strong>Content Rights:</strong> All space facts presented are sourced from verified astronomical databases and NASA research archives.</p>
+                    <p><strong>User Conduct:</strong> We encourage curious minds to explore, learn, and share the wonders of space with fellow cosmic enthusiasts.</p>
+                    <p><strong>Privacy:</strong> Your personal information remains as private as the dark side of the moon. We never share data with third-party entities.</p>
+                    <p><strong>Updates:</strong> As the universe expands, so does our knowledge base. Content is regularly updated with the latest astronomical discoveries.</p>
+                </div>
+                <button class="submit-btn" onclick="showPage('main')">Accept & Continue</button>
+            </div>
+        </div>
+        <button class="back-btn" onclick="showPage('landing')">← Back</button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="page" id="main">
+        <div class="main-content">
+            <div class="main-header">
+                <h1>Cosmic Facts</h1>
+            </div>
+            <div class="container">
+                <div class="facts-grid">
+                    <div class="fact-card">
+                        <div class="fact-icon">🌌</div>
+                        <h3>The Milky Way</h3>
+                        <p>Our galaxy contains between 100-400 billion stars and is about 105,000 light-years in diameter. We're located about 26,000 light-years from the galactic center.</p>
+                    </div>
+                    <div class="fact-card">
+                        <div class="fact-icon">⚫</div>
+                        <h3>Black Holes</h3>
+                        <p>The supermassive black hole at the center of our galaxy, Sagittarius A*, has a mass of about 4 million times that of our Sun, yet it's incredibly compact.</p>
+                    </div>
+                    <div class="fact-card">
+                        <div class="fact-icon">🌟</div>
+                        <h3>Stellar Birth</h3>
+                        <p>Stars are born in stellar nurseries called nebulae, where clouds of gas and dust collapse under gravity, heating up until nuclear fusion ignites.</p>
+                    </div>
+                    <div class="fact-card">
+                        <div class="fact-icon">🪐</div>
+                        <h3>Saturn's Rings</h3>
+                        <p>Saturn's magnificent rings are made of billions of particles of ice and rock, ranging in size from tiny grains to house-sized chunks.</p>
+                    </div>
+                    <div class="fact-card">
+                        <div class="fact-icon">🌙</div>
+                        <h3>Moon Mysteries</h3>
+                        <p>The Moon is gradually moving away from Earth at a rate of about 3.8 centimeters per year, a process that will continue for billions of years.</p>
+                    </div>
+                    <div class="fact-card">
+                        <div class="fact-icon">☄️</div>
+                        <h3>Cosmic Speed</h3>
+                        <p>The fastest man-made object, the Parker Solar Probe, travels at speeds up to 430,000 mph, fast enough to travel from New York to Tokyo in under a minute.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="back-btn" onclick="showPage('landing')">← Logout</button>
+    </div>
+
+    <script>
+        const starsContainer = document.getElementById('stars');
+        for (let i = 0; i < 200; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.width = Math.random() * 3 + 'px';
+            star.style.height = star.style.width;
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 3 + 's';
+            starsContainer.appendChild(star);
+        }
+
+        function showPage(pageId) {
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            showPage('terms');
+        }
+
+        function handleSignup(e) {
+            e.preventDefault();
+            showPage('terms');
+        }
+
+        // Parallax effect
+        document.addEventListener('mousemove', (e) => {
+            const stars = document.querySelectorAll('.star');
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            stars.forEach((star, i) => {
+                const speed = (i % 3 + 1) * 0.5;
+                star.style.transform = `translate(${x * speed * 10}px, ${y * speed * 10}px)`;
+            });
+        });
+    </script>
+</body>
+</html>
