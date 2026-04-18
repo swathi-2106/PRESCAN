@@ -26,9 +26,9 @@ const ScanForm = () => {
     const loadingToast = toast.loading('Initiating PRESCAN engine...');
 
     try {
-      const res = await axios.post('http://localhost:8080/api/scans/start', { url: url });
+      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/scans/start`, { url: url });
       toast.success('Scan completed successfully!', { id: loadingToast });
-      navigate(`/report/${res.data.id}`);
+      navigate(`/report/${res.data.id || res.data.scanId}`);
     } catch (err) {
       console.error(err);
       toast.error('Scan failed. Ensure backend is running.', { id: loadingToast });
