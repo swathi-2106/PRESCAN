@@ -81,5 +81,11 @@ The H2 (or MySQL) database uses two primary entities:
 
 ---
 
+## 🌐 Live Demo
+
+Frontend: https://prescan-f5t8mk9hb-swathi-2106s-projects.vercel.app 
+
+---
+
 ## 🔒 Security Disclaimer
 This tool is for **educational and defensive pre-deployment scanning**. The provided scanner modules utilize safe, non-destructive checks and mock indicators. Do not implement destructive payloads.
