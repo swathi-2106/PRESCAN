@@ -1,1 +1,0 @@
-node webvuln.js --target <URL> --output report.json
