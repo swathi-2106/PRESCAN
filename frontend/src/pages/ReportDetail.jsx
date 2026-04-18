@@ -12,7 +12,7 @@ const ReportDetail = () => {
   useEffect(() => {
     const fetchReport = async () => {
       try {
-        const res = await axios.get(`http://localhost:8080/api/scans/details/${id}`);
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/scans/details/${id}`);
         setReport(res.data);
       } catch (err) {
         console.error(err);
