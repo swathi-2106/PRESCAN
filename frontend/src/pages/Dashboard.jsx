@@ -13,7 +13,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const res = await axios.get('http://localhost:8080/api/scans/history');
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/scans/history`);
         const data = res.data;
         setRecentScans(data.slice(0, 5));
         
