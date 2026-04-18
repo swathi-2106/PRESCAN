@@ -1,7 +1,9 @@
 package com.prescan.exception;
 
 import org.springframework.http.HttpStatus;
-import com.prescan.exception.ErrorResponse;
+
+
+// import com.prescan.exception.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
